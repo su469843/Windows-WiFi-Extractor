@@ -25,7 +25,7 @@ jobs:
 
       - name: Compile Python to EXE
         run: |
-          pyinstaller --onefile stealer.py
+          pyinstaller --onefile a.py
           # 默认情况下，生成的 exe 文件位于 dist 文件夹内，文件名通常与脚本名称相同
 
       - name: Create Release
