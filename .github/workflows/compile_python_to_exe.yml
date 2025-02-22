@@ -1,16 +1,13 @@
-name: Compile Python to EXE
+name: Compile Python to EXE and Release
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    tags:
+      - '*'
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
@@ -28,10 +25,26 @@ jobs:
 
       - name: Compile Python to EXE
         run: |
-          pyinstaller --onefile stealer.py  # 请将 main.py 替换为你实际的 Python 文件名
+          pyinstaller --onefile stealer.py
+          # 默认情况下，生成的 exe 文件位于 dist 文件夹内，文件名通常与脚本名称相同
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: compiled-exe
-          path: dist/stealer  # 请将 main 替换为编译后生成的文件名称（不带扩展名）
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/main.exe
+          asset_name: main.exe
+          asset_content_type: application/octet-stream
