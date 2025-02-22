@@ -31,7 +31,7 @@ jobs:
         pyinstaller --onefile your_script.py  # 将your_script.py替换为你的Python脚本文件名
 
     - name: Upload artifact
-      uses: actions/upload-artifact@latest
+      uses: actions/upload-artifact@v4
       with:
         name: compiled-exe
         path: dist/stealer  # 将your_script替换为你的Python脚本文件名（不带扩展名）
